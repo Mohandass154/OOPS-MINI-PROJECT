@@ -1,0 +1,86 @@
+package parking;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.*;
+import java.time.LocalDateTime;
+
+public class BookingUI extends JFrame implements ActionListener {
+    JComboBox<String> slotBox;
+    JButton bookBtn;
+    String username;
+
+    public BookingUI(String username) {
+        this.username = username;
+        setTitle("Book Parking Slot");
+        setSize(300, 200);
+        setLayout(new GridLayout(2, 2, 10, 10));
+        setLocationRelativeTo(null);
+
+        add(new JLabel("Select Slot:"));
+        slotBox = new JComboBox<>();
+        loadSlots();
+        add(slotBox);
+
+        bookBtn = new JButton("Book");
+        bookBtn.addActionListener(this);
+        add(new JLabel(""));
+        add(bookBtn);
+
+        setVisible(true);
+    }
+
+    private void loadSlots() {
+        try (Connection conn = DBConnection.getConnection()) {
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery("SELECT slot_number FROM slots WHERE is_available=1");
+            while (rs.next()) slotBox.addItem(rs.getString("slot_number"));
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        String selectedSlot = (String) slotBox.getSelectedItem();
+        if (selectedSlot == null) {
+            JOptionPane.showMessageDialog(this, "No available slots!");
+            return;
+        }
+
+        try (Connection conn = DBConnection.getConnection()) {
+            // Get user_id
+            PreparedStatement psUser = conn.prepareStatement("SELECT id FROM users WHERE username=?");
+            psUser.setString(1, username);
+            ResultSet rsUser = psUser.executeQuery();
+            rsUser.next();
+            int userId = rsUser.getInt("id");
+
+            // Get slot_id
+            PreparedStatement psSlot = conn.prepareStatement("SELECT id FROM slots WHERE slot_number=?");
+            psSlot.setString(1, selectedSlot);
+            ResultSet rsSlot = psSlot.executeQuery();
+            rsSlot.next();
+            int slotId = rsSlot.getInt("id");
+
+            // Insert booking
+            PreparedStatement psBook = conn.prepareStatement(
+                "INSERT INTO bookings (user_id, slot_id, booking_time) VALUES (?, ?, ?)");
+            psBook.setInt(1, userId);
+            psBook.setInt(2, slotId);
+            psBook.setString(3, LocalDateTime.now().toString());
+            psBook.executeUpdate();
+
+            // Update slot availability
+            PreparedStatement psUpdate = conn.prepareStatement(
+                "UPDATE slots SET is_available=0 WHERE id=?");
+            psUpdate.setInt(1, slotId);
+            psUpdate.executeUpdate();
+
+            JOptionPane.showMessageDialog(this, "Booking Successful for Slot " + selectedSlot);
+            dispose();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+}
