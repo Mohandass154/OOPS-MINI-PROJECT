@@ -1,0 +1,51 @@
+package parking;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.*;
+
+public class UserDashboard extends JFrame implements ActionListener {
+    String username;
+    JButton viewBtn, bookBtn;
+    JTextArea textArea;
+
+    public UserDashboard(String username) {
+        this.username = username;
+        setTitle("User Dashboard - " + username);
+        setSize(600, 400);
+        setLayout(new BorderLayout());
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        JPanel top = new JPanel();
+        viewBtn = new JButton("View Available Slots");
+        bookBtn = new JButton("Book a Slot");
+        viewBtn.addActionListener(this);
+        bookBtn.addActionListener(this);
+        top.add(viewBtn);
+        top.add(bookBtn);
+
+        textArea = new JTextArea();
+        add(top, BorderLayout.NORTH);
+        add(new JScrollPane(textArea), BorderLayout.CENTER);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == viewBtn) showAvailableSlots();
+        else if (e.getSource() == bookBtn) new BookingUI(username);
+    }
+
+    private void showAvailableSlots() {
+        try (Connection conn = DBConnection.getConnection()) {
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM slots WHERE is_available=1");
+            textArea.setText("Available Slots:\n");
+            while (rs.next()) {
+                textArea.append("Slot " + rs.getString("slot_number") + "\n");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+}
