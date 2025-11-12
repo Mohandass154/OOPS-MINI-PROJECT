@@ -1,0 +1,44 @@
+package parking;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.*;
+
+public class AddSlotDialog extends JDialog implements ActionListener {
+    JTextField slotField;
+    JButton addBtn;
+
+    public AddSlotDialog(JFrame parent) {
+        super(parent, "Add New Slot", true);
+        setSize(300, 150);
+        setLayout(new GridLayout(2, 2, 10, 10));
+        setLocationRelativeTo(parent);
+
+        add(new JLabel("Slot Number:"));
+        slotField = new JTextField();
+        add(slotField);
+
+        addBtn = new JButton("Add");
+        addBtn.addActionListener(this);
+        add(new JLabel(""));
+        add(addBtn);
+
+        setVisible(true);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        String slotNum = slotField.getText();
+
+        try (Connection conn = DBConnection.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement(
+                "INSERT INTO slots (slot_number, is_available) VALUES (?, 1)");
+            ps.setString(1, slotNum);
+            ps.executeUpdate();
+            JOptionPane.showMessageDialog(this, "Slot added successfully!");
+            dispose();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+}
