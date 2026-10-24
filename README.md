@@ -1,33 +1,35 @@
 # 🚗 Online Parking Reservation System
 
-## 📌 Project Overview
+## ✨ Features
 
-The Online Parking Reservation System is an OOPs mini-project designed to simplify the process of reserving parking spaces. It aims to help users access parking reservation services through an organized application.
-
-## ✨ Key Modules
-
-* **User Login:** User authentication interface.
-* **Booking Interface:** Interface for parking reservation.
-* **Admin Dashboard:** Administrative interface for managing the system.
-* **Frontend:** User-facing application interface.
-* **Backend:** Application processing and business logic.
-* **Database:** Data storage and management.
-* **Database Connection:** Connection between the application and its database.
-
-*The availability of individual features depends on the implementation in the source code.*
+* 🔐 User login and authentication
+* 🅿️ Parking slot booking and reservation management
+* 📍 View available parking slots
+* 🔄 Update and cancel reservations
+* 👨‍💼 Admin dashboard for parking management
+* 🗄️ Database management
 
 ## 🛠️ Technologies Used
 
-Refer to the source files in this repository for the exact programming languages, frameworks, and database technologies used.
+* ☕ **Programming Language:** Java
+* 🎨 **User Interface:** Java Swing / JavaFX
+* 🗃️ **Database:** MySQL
+* 🔗 **Database Connectivity:** JDBC
+* 🧩 **Core Concepts:** Object-Oriented Programming (OOP)
 
-## 🎯 Project Objective
+## 📂 Project Structure
 
-To apply object-oriented programming concepts to the development of a parking reservation application.
+* 📊 `ADMINDASHBOARD` — Admin dashboard components
+* ⚙️ `BACKEND` — Application logic
+* 🅿️ `BOOKINGUI` — Parking booking interface
+* 🗄️ `DATABASE` — Database-related files
+* 🔌 `DBCONNECTION` — Database connection components
+* 🖥️ `FRONTEND` — User interface components
+* 🔐 `USERLOGIN` — User login components
 
-## 👨‍💻 Author
+## 🧠 OOP Concepts
 
-Mohandass154
-
-## 🔗 GitHub Repository
-
-https://github.com/Mohandass154/OOPS-MINI-PROJECT
+* 🔒 **Encapsulation:** Bundling data and methods within a class.
+* 🧬 **Inheritance:** Reusing properties and methods from existing classes.
+* 🔄 **Polymorphism:** Allowing methods to behave differently depending on the object.
+* 🎯 **Abstraction:** Hiding implementation details and exposing essential functionality.
